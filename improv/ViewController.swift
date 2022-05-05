@@ -34,7 +34,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         addAlert = UIAlertController(title: "New Folder", message: "Enter a name for your new folder", preferredStyle: .alert)
         addAlert!.addTextField { (textField) in
-            textField.delegate = self
+            textField.addTarget(self, action: #selector(self.textFieldDidChangeSelection(_:)), for: .editingChanged)
         }
 
         let saveAction = UIAlertAction(title: "Save", style: .default) { [unowned addAlert] _ in
@@ -48,14 +48,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
         present(addAlert!, animated: true)
     }
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if range.length == 0 {
-            self.addAlert!.actions[1].isEnabled = true
-        }
-        else{
+    @objc func textFieldDidChangeSelection(_ textField: UITextField) {
+        if !textField.hasText {
             self.addAlert!.actions[1].isEnabled = false
         }
-        return true
+        else{
+            self.addAlert!.actions[1].isEnabled = true
+        }
+
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if indexSelected == -1 {
@@ -110,7 +110,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
 
             self.addAlert = UIAlertController(title: "Rename Folder", message: "Enter a new name for this folder", preferredStyle: .alert)
             self.addAlert!.addTextField { (textField) in
-                textField.delegate = self
+                textField.addTarget(self, action: #selector(self.textFieldDidChangeSelection(_:)), for: .allEditingEvents)
             }
             self.addAlert?.textFields![0].text = folder.name
             let saveAction = UIAlertAction(title: "Save", style: .default) { _ in

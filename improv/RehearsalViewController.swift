@@ -14,9 +14,6 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
     @IBOutlet weak var rehearsalCollectionView: UICollectionView!
     var indexPlay = -1
 
-//    let defaults = UserDefaults.standard
-//    let decoder = JSONDecoder()
-//    let encoder = JSONEncoder()
     var selectedCell: RehearsalCollectionViewCell?
     var rehearsalsArr = [Rehearsal]()
     var userDataRehearsal = [Rehearsal]()
@@ -76,15 +73,16 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
 
         return newFileName
     }
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if range.length == 0 {
-            self.addAlert!.actions[1].isEnabled = true
-        }
-        else{
+    @objc func textFieldDidChangeSelection(_ textField: UITextField) {
+        if !textField.hasText {
             self.addAlert!.actions[1].isEnabled = false
         }
-        return true
+        else{
+            self.addAlert!.actions[1].isEnabled = true
+        }
+
     }
+
     func deleteRehearsal(filePath: String){
 
         let url = URL(string: filePath)!
@@ -159,7 +157,7 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
 
             self.addAlert = UIAlertController(title: "Rename Rehearsal", message: "Enter a new name for this rehearsal", preferredStyle: .alert)
             self.addAlert!.addTextField { (textField) in
-                textField.delegate = self
+                textField.addTarget(self, action: #selector(self.textFieldDidChangeSelection(_:)), for: .allEditingEvents)
             }
             self.addAlert?.textFields![0].text = rehearsal.name
             let saveAction = UIAlertAction(title: "Save", style: .default) { [self] _ in
