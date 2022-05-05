@@ -39,12 +39,12 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
 
     }
     func deleteRehearsals(){
-        var temp = [Rehearsal]()
+        let temp = [Rehearsal]()
         if let encodedRehearsals = try? encoder.encode(temp){
             defaults.set(encodedRehearsals, forKey: "Rehearsal")
         }
     }
-    func getFromUD() -> [Rehearsal]{
+    func fetchDataFromUserDefault() -> [Rehearsal]{
         var rehearsal = [Rehearsal]()
         if let rehearsalData = defaults.data(forKey: "Rehearsal"){
             do{
@@ -57,7 +57,7 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
         return rehearsal
     }
     func getRehearsals(){
-        rehearsalsArr = getFromUD()
+        rehearsalsArr = fetchDataFromUserDefault()
         
         guard let directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else{
             return
@@ -163,7 +163,7 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 
-        var tempRehearsalArr = getFromUD()
+        var tempRehearsalArr = fetchDataFromUserDefault()
         let rehearsal = tempRehearsalArr[indexPath.row]
         let renameAction = UIAction(title: "Rename", image: UIImage(systemName: "pencil"), identifier: nil){_ in
             //alert input
