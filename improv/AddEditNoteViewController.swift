@@ -23,9 +23,6 @@ class AddEditNoteViewController: UIViewController {
     var folderIndex = -1
     var noteIndex = -1
     
-    let defaults = UserDefaults.standard
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
     
     // MARK: - delegate object initialization
     weak var delegate: AddEdtNoteViewControllerDelegate?
@@ -51,15 +48,7 @@ class AddEditNoteViewController: UIViewController {
         }
     }
     func getFolders(){
-        if let folderData = defaults.data(forKey: "Folder"){
-            do{
-                let folder = try decoder.decode([Folder].self, from: folderData)
-                self.foldersArr = folder
-            }
-            catch{
-                print("ERROR")
-            }
-        }
+        foldersArr = Helper.getFoldersFromUserDefault()
     }
     @IBAction func cancelButtonPressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -90,9 +79,7 @@ class AddEditNoteViewController: UIViewController {
         else{
             foldersArr[folderIndex].notes.append(Note(title: titleTextField.text, content: contentTextView.text))
         }
-        if let encodedNote = try? encoder.encode(foldersArr) {
-            defaults.set(encodedNote, forKey: "Folder")
-        }
+        Helper.saveFolderToUserDefault(content: foldersArr)
         self.dismiss(animated: true, completion: self.delegate?.reloadData)
     }
     

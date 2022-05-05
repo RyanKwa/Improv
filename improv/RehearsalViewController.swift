@@ -14,9 +14,9 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
     @IBOutlet weak var rehearsalCollectionView: UICollectionView!
     var indexPlay = -1
 
-    let defaults = UserDefaults.standard
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
+//    let defaults = UserDefaults.standard
+//    let decoder = JSONDecoder()
+//    let encoder = JSONEncoder()
     var selectedCell: RehearsalCollectionViewCell?
     var rehearsalsArr = [Rehearsal]()
     var userDataRehearsal = [Rehearsal]()
@@ -40,25 +40,13 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
     }
     func deleteRehearsals(){
         let temp = [Rehearsal]()
-        if let encodedRehearsals = try? encoder.encode(temp){
-            defaults.set(encodedRehearsals, forKey: "Rehearsal")
-        }
+        Helper.saveRehearsalToUserDefault(content: temp)
     }
-    func fetchDataFromUserDefault() -> [Rehearsal]{
-        var rehearsal = [Rehearsal]()
-        if let rehearsalData = defaults.data(forKey: "Rehearsal"){
-            do{
-                rehearsal = try decoder.decode([Rehearsal].self, from: rehearsalData)
-            }
-            catch{
-                print("ERROR")
-            }
-        }
-        return rehearsal
+    func getRehearsalsFromUserDefault() -> [Rehearsal] {
+        return Helper.getRehearsalsFromUserDefault()
     }
     func getRehearsals(){
-        rehearsalsArr = fetchDataFromUserDefault()
-        
+        rehearsalsArr = getRehearsalsFromUserDefault()
         guard let directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else{
             return
         }
@@ -163,7 +151,7 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 
-        var tempRehearsalArr = fetchDataFromUserDefault()
+        var tempRehearsalArr = getRehearsalsFromUserDefault()
         let rehearsal = tempRehearsalArr[indexPath.row]
         let renameAction = UIAction(title: "Rename", image: UIImage(systemName: "pencil"), identifier: nil){_ in
             //alert input
@@ -180,9 +168,7 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
                 let newRehearsalFileName = self.updateRehearseFileName(rehearsal: rehearsal, newName: rehearseName!)
                 rehearsal.filePath = newRehearsalFileName
                 //save to userdefault
-               if let encodedRehearsals = try? self.encoder.encode(tempRehearsalArr){
-                    self.defaults.set(encodedRehearsals, forKey: "Rehearsal")
-                }
+                Helper.saveRehearsalToUserDefault(content: tempRehearsalArr)
                 self.getRehearsals()
             }
             saveAction.isEnabled = false
@@ -202,9 +188,7 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
                 tempRehearsalArr.remove(at: indexPath.row)
                 
                 //save to userdefault
-                if let encodedRehearsals = try? self.encoder.encode(tempRehearsalArr){
-                    self.defaults.set(encodedRehearsals, forKey: "Rehearsal")
-                }
+                Helper.saveRehearsalToUserDefault(content: tempRehearsalArr)
                 self.getRehearsals()
             }
 

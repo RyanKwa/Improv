@@ -32,16 +32,12 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
 
-    let defaults = UserDefaults.standard
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         if folderIndex == -1 {
             return
         }
-        getRehearsals()
+        getRehearsalsFromUserDefault()
         setup()
         // Do any additional setup after loading the view.
     }
@@ -56,32 +52,16 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
         noteCollectionView.collectionViewLayout = NoteCollectionFlowLayout()
         noteCollectionView.delegate = self
         noteCollectionView.dataSource = self
-        getFolders()
+        getFoldersFromUserDefault()
         noteCollectionView.reloadData()
         rehearsalDurationLabel.isHidden = true
         noteProgressLabel.text = foldersArr[folderIndex].notes.count == 0 ?"0 / \(foldersArr[folderIndex].notes.count)" : "\(currentSelectedIndex + 1) / \(foldersArr[folderIndex].notes.count)"
     }
-    func getFolders(){
-        if let folderData = defaults.data(forKey: "Folder"){
-            do{
-                let folder = try decoder.decode([Folder].self, from: folderData)
-                self.foldersArr = folder
-            }
-            catch{
-                print("ERROR")
-            }
-        }
+    func getFoldersFromUserDefault(){
+        foldersArr = Helper.getFoldersFromUserDefault()
     }
-    func getRehearsals(){
-        if let rehearsalData = defaults.data(forKey: "Rehearsal"){
-            do{
-                let rehearsal = try decoder.decode([Rehearsal].self, from: rehearsalData)
-                self.rehearsalsArr = rehearsal
-            }
-            catch{
-                print("ERROR")
-            }
-        }
+    func getRehearsalsFromUserDefault(){
+        rehearsalsArr = Helper.getRehearsalsFromUserDefault()
     }
     
     
@@ -161,9 +141,7 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
     //            if somehow mau pakai userdefault, untuk filepathnya append audio filename ->  /audioFileName
     //            let fileLocation = "\(directoryURL.path)/\(audioFileNamewithExtension)"
                 rehearsalsArr.append(Rehearsal(name: audioFileName, duration: rehearseDuration, filePath: audioFileNamewithExtension))
-                if let encodedRehearsals = try? encoder.encode(rehearsalsArr){
-                    defaults.set(encodedRehearsals, forKey: "Rehearsal")
-                }
+                Helper.saveRehearsalToUserDefault(content: rehearsalsArr)
             }
 
         }

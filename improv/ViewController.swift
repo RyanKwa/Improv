@@ -10,13 +10,10 @@ import UIKit
 class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var folderTableView: UITableView!
-    var folderArr = [Folder]()
+    var foldersArr = [Folder]()
     var clicked = false
     var addAlert: UIAlertController?
     var indexSelected = -1
-    let defaults = UserDefaults.standard
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +39,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
         let saveAction = UIAlertAction(title: "Save", style: .default) { [unowned addAlert] _ in
             let folderName = addAlert?.textFields![0].text
-            self.folderArr.append(Folder(name: folderName, notes: []))
+            self.foldersArr.append(Folder(name: folderName, notes: []))
             self.saveToUserDefaultAndRefreshData()
         }
         saveAction.isEnabled = false
@@ -65,48 +62,36 @@ class ViewController: UIViewController, UITextFieldDelegate {
             return
         }
         let destination = segue.destination as? NoteViewController
-        destination?.titleNavBar = folderArr[indexSelected].name ?? ""
+        destination?.titleNavBar = foldersArr[indexSelected].name ?? ""
         destination?.folderIndex = indexSelected
         let backButton = UIBarButtonItem()
         backButton.title = "Folders"
         navigationItem.backBarButtonItem = backButton
     }
     func getFolders(){
-        if let folderData = defaults.data(forKey: "Folder"){
-            do{
-                let folder = try decoder.decode([Folder].self, from: folderData)
-                self.folderArr = folder
-                folderTableView.reloadData()
-            }
-            catch{
-                print("ERROR")
-            }
-        }
+        foldersArr = Helper.getFoldersFromUserDefault()
+        folderTableView.reloadData()
     }
     
     func removeAllFolder(){
         let temp = [Folder]()
-        if let encodedFolders = try? encoder.encode(temp){
-            defaults.set(encodedFolders, forKey: "Folder")
-        }
+        Helper.saveFolderToUserDefault(content: temp)
     }
     func saveToUserDefaultAndRefreshData(){
-        if let encodedFolders = try? encoder.encode(folderArr){
-            defaults.set(encodedFolders, forKey: "Folder")
-        }
+        Helper.saveFolderToUserDefault(content: foldersArr)
         folderTableView.reloadData()
     }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return folderArr.count
+        return foldersArr.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "folderCell") as! FolderTableViewCell
-        cell.folderName.text = folderArr[indexPath.row].name
-        cell.totalNumberOfCard.text = "\(folderArr[indexPath.row].notes.count) notes"
+        cell.folderName.text = foldersArr[indexPath.row].name
+        cell.totalNumberOfCard.text = "\(foldersArr[indexPath.row].notes.count) notes"
         return cell
     }
     
@@ -119,7 +104,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
     }
     //MARK: Context Menu
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let folder = folderArr[indexPath.row]
+        let folder = foldersArr[indexPath.row]
         let renameAction = UIAction(title: "Rename", image: UIImage(systemName: "pencil"), identifier: nil) { _ in
             let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
 
@@ -130,7 +115,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
             self.addAlert?.textFields![0].text = folder.name
             let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
                 let folderName = self.addAlert?.textFields![0].text
-                self.folderArr[indexPath.row].name = folderName
+                self.foldersArr[indexPath.row].name = folderName
                 self.saveToUserDefaultAndRefreshData()
             }
             saveAction.isEnabled = false
@@ -144,7 +129,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
 
             self.addAlert = UIAlertController(title: "Delete Folder", message: "This folder and all the notes inside will be deleted permanently", preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
-                self.folderArr.remove(at: indexPath.row)
+                self.foldersArr.remove(at: indexPath.row)
                 self.saveToUserDefaultAndRefreshData()
             }
 

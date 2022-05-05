@@ -17,9 +17,6 @@ class ManageNoteViewController: UIViewController, AddEdtNoteViewControllerDelega
     var addAlert: UIAlertController?
 
     var indexChosen = -1
-    let defaults = UserDefaults.standard
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     @IBOutlet weak var noteTableView: UITableView!
     override func viewDidLoad() {
@@ -37,15 +34,7 @@ class ManageNoteViewController: UIViewController, AddEdtNoteViewControllerDelega
         noteTableView.reloadData()
     }
     func getFolders(){
-        if let folderData = defaults.data(forKey: "Folder"){
-            do{
-                let folder = try decoder.decode([Folder].self, from: folderData)
-                self.foldersArr = folder
-            }
-            catch{
-                print("ERROR")
-            }
-        }
+        foldersArr = Helper.getFoldersFromUserDefault()
     }
 
     @IBAction func addButtonPressed(_ sender: Any) {
@@ -111,9 +100,7 @@ extension ManageNoteViewController: UITableViewDelegate, UITableViewDataSource{
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
                 self.foldersArr[self.folderIndex].notes.remove(at: indexPath.row)
                 //save to userdefault
-                if let encodedFolders = try? self.encoder.encode(self.foldersArr){
-                    self.defaults.set(encodedFolders, forKey: "Folder")
-                }
+                Helper.saveFolderToUserDefault(content: self.foldersArr)
                 self.noteTableView.reloadData()
             }
 
