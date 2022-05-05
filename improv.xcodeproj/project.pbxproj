@@ -96,28 +96,52 @@
 		C57998F42816E17700A08041 /* improv */ = {
 			isa = PBXGroup;
 			children = (
-				C57998F92816E17700A08041 /* ViewController.swift */,
-				C56470C82817E8D4005A32FC /* UIView+Extension.swift */,
-				C5343196281A461B0092E0FF /* RehearsalViewController.swift */,
-				C5DEC3E228182B270095209C /* NoteViewController.swift */,
-				C534318F28197B340092E0FF /* AddEditNoteViewController.swift */,
-				C566B4422818F94400E381FF /* ManageNoteViewController.swift */,
-				C5343194281A440D0092E0FF /* RehearsalCollectionViewCell.swift */,
-				C566B44428192A8400E381FF /* NotesTableViewCell.swift */,
-				C57998FB2816E17700A08041 /* Main.storyboard */,
-				C57227472818333400AB5B41 /* NoteCollectionView.swift */,
-				C5722745281830B500AB5B41 /* NoteCollectionFlowLayout.swift */,
-				C56470CA2817EE44005A32FC /* FolderTableViewCell.swift */,
-				C5B198492824010B00CE5073 /* Helper.swift */,
+				C5B1984F282411EF00CE5073 /* Utilities */,
+				C5B1984E282411D900CE5073 /* Controllers */,
+				C5B1984D282411AE00CE5073 /* Views */,
 				C534319328199E3E0092E0FF /* Model */,
 				C57998F52816E17700A08041 /* AppDelegate.swift */,
 				C57998F72816E17700A08041 /* SceneDelegate.swift */,
 				C57998FE2816E17900A08041 /* Assets.xcassets */,
 				C57999002816E17900A08041 /* LaunchScreen.storyboard */,
 				C57999032816E17900A08041 /* Info.plist */,
-				C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */,
 			);
 			path = improv;
+			sourceTree = "<group>";
+		};
+		C5B1984D282411AE00CE5073 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C566B44428192A8400E381FF /* NotesTableViewCell.swift */,
+				C5343194281A440D0092E0FF /* RehearsalCollectionViewCell.swift */,
+				C57227472818333400AB5B41 /* NoteCollectionView.swift */,
+				C5722745281830B500AB5B41 /* NoteCollectionFlowLayout.swift */,
+				C57998FB2816E17700A08041 /* Main.storyboard */,
+				C56470CA2817EE44005A32FC /* FolderTableViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C5B1984E282411D900CE5073 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C57998F92816E17700A08041 /* ViewController.swift */,
+				C5343196281A461B0092E0FF /* RehearsalViewController.swift */,
+				C5DEC3E228182B270095209C /* NoteViewController.swift */,
+				C534318F28197B340092E0FF /* AddEditNoteViewController.swift */,
+				C566B4422818F94400E381FF /* ManageNoteViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		C5B1984F282411EF00CE5073 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */,
+				C56470C82817E8D4005A32FC /* UIView+Extension.swift */,
+				C5B198492824010B00CE5073 /* Helper.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
