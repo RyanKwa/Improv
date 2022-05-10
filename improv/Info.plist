@@ -22,6 +22,6 @@
 		</dict>
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Please give permission so you can rehearse</string>
+	<string>Allow improv to access your microphone so you can rehearse</string>
 </dict>
 </plist>

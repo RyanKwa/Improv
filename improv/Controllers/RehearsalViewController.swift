@@ -126,7 +126,12 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? RehearsalCollectionViewCell
         
-        if(audioPlayer?.isPlaying == true){
+        if(audioPlayer?.isPlaying == true && indexPlay == indexPath.row){
+            audioPlayer?.stop()
+            selectedCell?.controlButton.setImage(UIImage(systemName:"waveform"), for: .normal)
+            return
+        }
+        else if (audioPlayer?.isPlaying == true && indexPlay != indexPath.row){
             audioPlayer?.stop()
             selectedCell?.controlButton.setImage(UIImage(systemName:"waveform"), for: .normal)
         }

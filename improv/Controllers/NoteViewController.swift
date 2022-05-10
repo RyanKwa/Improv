@@ -153,7 +153,7 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
             print("Permission: Microphone granted")
         }
         else if recordPermission == AVAudioSession.RecordPermission.denied {
-            let alert = UIAlertController(title: "Microphone Permission Required", message: "Improv is Not Authorized to Access the Microphone!", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Microphone Permission Required", message: "Improv is Not Authorized to Access the Microphone, Please Allow it in Settings", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
             
             //open settings
