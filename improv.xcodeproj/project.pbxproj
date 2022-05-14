@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C534319028197B340092E0FF /* AddEditNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C534318F28197B340092E0FF /* AddEditNoteViewController.swift */; };
-		C534319228198AD00092E0FF /* Rehearsal.swift in Sources */ = {isa = PBXBuildFile; fileRef = C534319128198AD00092E0FF /* Rehearsal.swift */; };
 		C5343195281A440D0092E0FF /* RehearsalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5343194281A440D0092E0FF /* RehearsalCollectionViewCell.swift */; };
 		C5343197281A461B0092E0FF /* RehearsalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5343196281A461B0092E0FF /* RehearsalViewController.swift */; };
 		C56470C92817E8D4005A32FC /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56470C82817E8D4005A32FC /* UIView+Extension.swift */; };
@@ -25,14 +24,18 @@
 		C57999022816E17900A08041 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C57999002816E17900A08041 /* LaunchScreen.storyboard */; };
 		C5B1984A2824010B00CE5073 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B198492824010B00CE5073 /* Helper.swift */; };
 		C5B1984C282403D100CE5073 /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */; };
-		C5DEC3DD2817F0E10095209C /* Folder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DEC3DC2817F0E10095209C /* Folder.swift */; };
-		C5DEC3DF2817F10B0095209C /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DEC3DE2817F10B0095209C /* Note.swift */; };
+		C5C1DAC0282FF5ED0062CF5C /* Improv.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DABE282FF5ED0062CF5C /* Improv.xcdatamodeld */; };
+		C5C1DAD4282FF8300062CF5C /* Rehearsal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DACE282FF8300062CF5C /* Rehearsal+CoreDataClass.swift */; };
+		C5C1DAD5282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DACF282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift */; };
+		C5C1DAD6282FF8300062CF5C /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DAD0282FF8300062CF5C /* Note+CoreDataClass.swift */; };
+		C5C1DAD7282FF8300062CF5C /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DAD1282FF8300062CF5C /* Note+CoreDataProperties.swift */; };
+		C5C1DAD8282FF8300062CF5C /* Folder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DAD2282FF8300062CF5C /* Folder+CoreDataClass.swift */; };
+		C5C1DAD9282FF8300062CF5C /* Folder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DAD3282FF8300062CF5C /* Folder+CoreDataProperties.swift */; };
 		C5DEC3E328182B270095209C /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DEC3E228182B270095209C /* NoteViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C534318F28197B340092E0FF /* AddEditNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditNoteViewController.swift; sourceTree = "<group>"; };
-		C534319128198AD00092E0FF /* Rehearsal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rehearsal.swift; sourceTree = "<group>"; };
 		C5343194281A440D0092E0FF /* RehearsalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RehearsalCollectionViewCell.swift; sourceTree = "<group>"; };
 		C5343196281A461B0092E0FF /* RehearsalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RehearsalViewController.swift; sourceTree = "<group>"; };
 		C56470C82817E8D4005A32FC /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
@@ -51,8 +54,13 @@
 		C57999032816E17900A08041 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5B198492824010B00CE5073 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
-		C5DEC3DC2817F0E10095209C /* Folder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folder.swift; sourceTree = "<group>"; };
-		C5DEC3DE2817F10B0095209C /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		C5C1DABF282FF5ED0062CF5C /* Improv.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Improv.xcdatamodel; sourceTree = "<group>"; };
+		C5C1DACE282FF8300062CF5C /* Rehearsal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Rehearsal+CoreDataClass.swift"; sourceTree = "<group>"; };
+		C5C1DACF282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Rehearsal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		C5C1DAD0282FF8300062CF5C /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
+		C5C1DAD1282FF8300062CF5C /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		C5C1DAD2282FF8300062CF5C /* Folder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Folder+CoreDataClass.swift"; sourceTree = "<group>"; };
+		C5C1DAD3282FF8300062CF5C /* Folder+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Folder+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		C5DEC3E228182B270095209C /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,16 +75,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C534319328199E3E0092E0FF /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				C5DEC3DC2817F0E10095209C /* Folder.swift */,
-				C5DEC3DE2817F10B0095209C /* Note.swift */,
-				C534319128198AD00092E0FF /* Rehearsal.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		C57998E92816E17700A08041 = {
 			isa = PBXGroup;
 			children = (
@@ -96,15 +94,16 @@
 		C57998F42816E17700A08041 /* improv */ = {
 			isa = PBXGroup;
 			children = (
+				C5C1DAC1282FF7A20062CF5C /* Models */,
 				C5B1984F282411EF00CE5073 /* Utilities */,
 				C5B1984E282411D900CE5073 /* Controllers */,
 				C5B1984D282411AE00CE5073 /* Views */,
-				C534319328199E3E0092E0FF /* Model */,
 				C57998F52816E17700A08041 /* AppDelegate.swift */,
 				C57998F72816E17700A08041 /* SceneDelegate.swift */,
 				C57998FE2816E17900A08041 /* Assets.xcassets */,
 				C57999002816E17900A08041 /* LaunchScreen.storyboard */,
 				C57999032816E17900A08041 /* Info.plist */,
+				C5C1DABE282FF5ED0062CF5C /* Improv.xcdatamodeld */,
 			);
 			path = improv;
 			sourceTree = "<group>";
@@ -142,6 +141,19 @@
 				C5B198492824010B00CE5073 /* Helper.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		C5C1DAC1282FF7A20062CF5C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C5C1DACE282FF8300062CF5C /* Rehearsal+CoreDataClass.swift */,
+				C5C1DACF282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift */,
+				C5C1DAD0282FF8300062CF5C /* Note+CoreDataClass.swift */,
+				C5C1DAD1282FF8300062CF5C /* Note+CoreDataProperties.swift */,
+				C5C1DAD2282FF8300062CF5C /* Folder+CoreDataClass.swift */,
+				C5C1DAD3282FF8300062CF5C /* Folder+CoreDataProperties.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -216,23 +228,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				C57998FA2816E17700A08041 /* ViewController.swift in Sources */,
-				C534319228198AD00092E0FF /* Rehearsal.swift in Sources */,
 				C56470CB2817EE44005A32FC /* FolderTableViewCell.swift in Sources */,
-				C5DEC3DF2817F10B0095209C /* Note.swift in Sources */,
 				C57227482818333400AB5B41 /* NoteCollectionView.swift in Sources */,
 				C566B44528192A8400E381FF /* NotesTableViewCell.swift in Sources */,
 				C566B4432818F94400E381FF /* ManageNoteViewController.swift in Sources */,
 				C5722746281830B500AB5B41 /* NoteCollectionFlowLayout.swift in Sources */,
 				C5B1984C282403D100CE5073 /* UserDefaultKeys.swift in Sources */,
+				C5C1DAD4282FF8300062CF5C /* Rehearsal+CoreDataClass.swift in Sources */,
+				C5C1DAD8282FF8300062CF5C /* Folder+CoreDataClass.swift in Sources */,
 				C5B1984A2824010B00CE5073 /* Helper.swift in Sources */,
+				C5C1DAD7282FF8300062CF5C /* Note+CoreDataProperties.swift in Sources */,
+				C5C1DAD5282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift in Sources */,
+				C5C1DAC0282FF5ED0062CF5C /* Improv.xcdatamodeld in Sources */,
 				C57998F62816E17700A08041 /* AppDelegate.swift in Sources */,
 				C5DEC3E328182B270095209C /* NoteViewController.swift in Sources */,
+				C5C1DAD9282FF8300062CF5C /* Folder+CoreDataProperties.swift in Sources */,
 				C57998F82816E17700A08041 /* SceneDelegate.swift in Sources */,
 				C5343197281A461B0092E0FF /* RehearsalViewController.swift in Sources */,
 				C56470C92817E8D4005A32FC /* UIView+Extension.swift in Sources */,
 				C534319028197B340092E0FF /* AddEditNoteViewController.swift in Sources */,
 				C5343195281A440D0092E0FF /* RehearsalCollectionViewCell.swift in Sources */,
-				C5DEC3DD2817F0E10095209C /* Folder.swift in Sources */,
+				C5C1DAD6282FF8300062CF5C /* Note+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +466,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C5C1DABE282FF5ED0062CF5C /* Improv.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C5C1DABF282FF5ED0062CF5C /* Improv.xcdatamodel */,
+			);
+			currentVersion = C5C1DABF282FF5ED0062CF5C /* Improv.xcdatamodel */;
+			path = Improv.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C57998EA2816E17700A08041 /* Project object */;
 }

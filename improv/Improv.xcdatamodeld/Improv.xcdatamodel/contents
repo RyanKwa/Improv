@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E258" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Folder" representedClassName="Folder" syncable="YES">
+        <attribute name="folderID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="folder" inverseEntity="Note"/>
+    </entity>
+    <entity name="Note" representedClassName="Note" syncable="YES">
+        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="isFlipped" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="noteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="folder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Folder" inverseName="notes" inverseEntity="Folder"/>
+    </entity>
+    <entity name="Rehearsal" representedClassName="Rehearsal" syncable="YES">
+        <attribute name="duration" optional="YES" attributeType="String"/>
+        <attribute name="filePath" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="rehearsalID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <elements>
+        <element name="Folder" positionX="-36" positionY="9" width="128" height="74"/>
+        <element name="Rehearsal" positionX="0" positionY="45" width="128" height="89"/>
+        <element name="Note" positionX="27" positionY="72" width="128" height="104"/>
+    </elements>
+</model>
