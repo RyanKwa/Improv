@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import CoreData
 
 class NoteViewController: UIViewController, AVAudioRecorderDelegate {
 
@@ -15,13 +16,16 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var rehearsalDurationLabel: UILabel!
     @IBOutlet weak var noteProgressLabel: UILabel!
     @IBOutlet weak var rehearseButton: UIButton!
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
     var audioFileURL: URL!
     var audioFileName = ""
     var audioFileNamewithExtension = ""
     var timer: Timer?
-    var foldersArr = [Folder]()
+    var notesArr = [Note]()
     var rehearsalsArr = [Rehearsal]()
-    var folderIndex = -1
+    var folder: Folder?
     
     var rehearseDuration = "00:00"
     var duration = 0
@@ -34,16 +38,32 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        if folderIndex == -1 {
-            return
-        }
-        getRehearsalsFromUserDefault()
         setup()
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setup()
+    }
+    
+    func fetchNotes(){
+        notesArr = folder!.notesArray
+        DispatchQueue.main.async {
+            self.noteCollectionView.reloadData()
+        }
+    }
+    func fetchRehearsal(){
+        do{
+            let request = Rehearsal.fetchRequest() as NSFetchRequest<Rehearsal>
+            
+            let sort = NSSortDescriptor(key: "rehearsalID", ascending: true)
+            request.sortDescriptors = [sort]
+            
+            self.rehearsalsArr = try context.fetch(request)
+        }
+        catch let error as NSError{
+            print("Error : \(error.localizedDescription)")
+        }
     }
     func setup(){
         title = titleNavBar
@@ -52,20 +72,11 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
         noteCollectionView.collectionViewLayout = NoteCollectionFlowLayout()
         noteCollectionView.delegate = self
         noteCollectionView.dataSource = self
-        getFoldersFromUserDefault()
-        noteCollectionView.reloadData()
+        fetchNotes()
         rehearsalDurationLabel.isHidden = true
-        noteProgressLabel.text = foldersArr[folderIndex].notes.count == 0 ?"0 / \(foldersArr[folderIndex].notes.count)" : "\(currentSelectedIndex + 1) / \(foldersArr[folderIndex].notes.count)"
+        noteProgressLabel.text = folder?.notes?.count == 0 ? "0 / \(notesArr.count)" : "\(currentSelectedIndex + 1) / \(notesArr.count)"
     }
-    func getFoldersFromUserDefault(){
-        foldersArr = Helper.getFoldersFromUserDefault()
-    }
-    func getRehearsalsFromUserDefault(){
-        rehearsalsArr = Helper.getRehearsalsFromUserDefault()
-    }
-    
-    
-    
+        
     @IBAction func addButtonPressed(_ sender: Any) {
         performSegue(withIdentifier: "manageNoteSegue", sender: self)
     }
@@ -89,7 +100,7 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyymmddHHmmss"
                 let dateStr = dateFormatter.string(from: date)
-                audioFileName = "\(foldersArr[folderIndex].name!) Rehearsal \(dateStr)"
+                audioFileName = "\(folder!.name!) Rehearsal \(dateStr)"
                 audioFileNamewithExtension = "\(audioFileName).m4a"
                 
 
@@ -139,11 +150,25 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
                     }
                 }
     //            if somehow mau pakai userdefault, untuk filepathnya append audio filename ->  /audioFileName
-    //            let fileLocation = "\(directoryURL.path)/\(audioFileNamewithExtension)"
-                rehearsalsArr.append(Rehearsal(name: audioFileName, duration: rehearseDuration, filePath: audioFileNamewithExtension))
-                Helper.saveRehearsalToUserDefault(content: rehearsalsArr)
+                //create folder object
+                let newRehearsal = Rehearsal(context: self.context)
+                if self.rehearsalsArr.isEmpty {
+                    newRehearsal.rehearsalID = 1
+                }
+                else{
+                    newRehearsal.rehearsalID = self.rehearsalsArr.last!.rehearsalID + 1
+                }
+                newRehearsal.name = audioFileName
+                newRehearsal.filePath = audioFileNamewithExtension
+                newRehearsal.duration = rehearseDuration
+                //save data
+                do {
+                    try self.context.save()
+                }
+                catch let error as NSError{
+                    print("ERROR: \(error.localizedDescription)")
+                }
             }
-
         }
     }
     func checkMicrophoneAccess() {
@@ -182,7 +207,7 @@ class NoteViewController: UIViewController, AVAudioRecorderDelegate {
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let dest = segue.destination as! ManageNoteViewController
-        dest.folderIndex = folderIndex
+        dest.folder = self.folder
         let backButton = UIBarButtonItem()
         backButton.title = "Notes"
         navigationItem.backBarButtonItem = backButton
@@ -239,8 +264,8 @@ extension NoteViewController{
             print("Scroll: Error")
         }
 //        case: kalau ngescroll dia bisa out of index kalau mentok jadi pastiin si index jgn sampe out of index (> size array or < 0)
-        if selectedIndex > foldersArr[folderIndex].notes.count - 1 {
-            selectedIndex = foldersArr[folderIndex].notes.count - 1
+        if selectedIndex > notesArr.count - 1 {
+            selectedIndex = notesArr.count - 1
         }
         else if selectedIndex < 0 {
             selectedIndex = 0
@@ -259,7 +284,7 @@ extension NoteViewController{
 
         previousSelectedCard.shrinkCard()
         nextSelectedCard.enlargeCard()
-        noteProgressLabel.text = "\(currentSelectedIndex + 1) / \(foldersArr[folderIndex].notes.count)"
+        noteProgressLabel.text = "\(currentSelectedIndex + 1) / \(notesArr.count)"
         
     }
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -275,16 +300,16 @@ extension NoteViewController{
 //MARK: Collection views
 extension NoteViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return foldersArr[folderIndex].notes.count
+        return notesArr.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "noteCell", for: indexPath) as! NoteCollectionView
         
-        cell.cardTitleLabel.text = foldersArr[folderIndex].notes[indexPath.row].title
-        cell.cardContentLabel.text = foldersArr[folderIndex].notes[indexPath.row].content
+        cell.cardTitleLabel.text = notesArr[indexPath.row].title
+        cell.cardContentLabel.text = notesArr[indexPath.row].content
         cell.cardContentLabel.adjustsFontSizeToFitWidth = true
-        cell.notes = foldersArr[folderIndex].notes
+        cell.notes = notesArr
         cell.currentIndex = indexPath.row
         
         if currentSelectedIndex == indexPath.row {

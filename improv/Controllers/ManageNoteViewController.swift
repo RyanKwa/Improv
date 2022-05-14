@@ -11,32 +11,30 @@ class ManageNoteViewController: UIViewController, AddEdtNoteViewControllerDelega
     
 
     var folder: Folder?
-    var folderIndex = -1
-    var noteIndex = -1
-    var foldersArr = [Folder]()
+    var notesArr = [Note]()
     var addAlert: UIAlertController?
 
     var indexChosen = -1
 
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
     @IBOutlet weak var noteTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        if folderIndex == -1 {
-            return
-        }
         // Do any additional setup after loading the view.
-        reloadData()
+        fetchNotes()
         noteTableView.dataSource = self
         noteTableView.delegate = self
     }
     func reloadData() {
-        getFolders()
-        noteTableView.reloadData()
+        fetchNotes()
     }
-    func getFolders(){
-        foldersArr = Helper.getFoldersFromUserDefault()
+    func fetchNotes(){
+        notesArr = folder!.notesArray
+        DispatchQueue.main.async {
+            self.noteTableView.reloadData()
+        }
     }
-
     @IBAction func addButtonPressed(_ sender: Any) {
         performSegue(withIdentifier: "addNoteSegue", sender: self)
     }
@@ -56,14 +54,15 @@ class ManageNoteViewController: UIViewController, AddEdtNoteViewControllerDelega
             let dest = segue.destination as! AddEditNoteViewController
             dest.isEditingNote = false
             dest.delegate = self
-            dest.folderIndex = folderIndex
+            dest.folder = folder
         }
         else if segue.identifier == "editNoteSegue"{
             let dest = segue.destination as! AddEditNoteViewController
             dest.isEditingNote = true
             dest.delegate = self
-            dest.folderIndex = folderIndex
-            dest.noteIndex = noteIndex
+            dest.note = notesArr[indexChosen]
+            dest.folder = folder
+
         }
     
     }
@@ -71,13 +70,13 @@ class ManageNoteViewController: UIViewController, AddEdtNoteViewControllerDelega
 
 extension ManageNoteViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return foldersArr[folderIndex].notes.count
+        return notesArr.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "noteCell") as! NotesTableViewCell
-        cell.noteTitleLabel.text = foldersArr[folderIndex].notes[indexPath.row].title
-        cell.noteContentLabel.text = foldersArr[folderIndex].notes[indexPath.row].content
+        cell.noteTitleLabel.text = notesArr[indexPath.row].title
+        cell.noteContentLabel.text = notesArr[indexPath.row].content
         return cell
     }
     
@@ -89,7 +88,8 @@ extension ManageNoteViewController: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let editAction = UIAction(title: "Edit", image: UIImage(systemName: "pencil"), identifier: nil){_ in
-            self.noteIndex = indexPath.row
+            self.indexChosen = indexPath.row
+
             self.performSegue(withIdentifier: "editNoteSegue", sender: self)
 
         }
@@ -98,10 +98,22 @@ extension ManageNoteViewController: UITableViewDelegate, UITableViewDataSource{
 
             self.addAlert = UIAlertController(title: "Delete Note", message: "This note will be deleted permanently", preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
-                self.foldersArr[self.folderIndex].notes.remove(at: indexPath.row)
-                //save to userdefault
-                Helper.saveFolderToUserDefault(content: self.foldersArr)
-                self.noteTableView.reloadData()
+                //get folder to remove
+                let noteToRemove = self.notesArr[indexPath.row]
+                
+                //remove
+                self.folder?.removeFromNotes(noteToRemove)
+                
+                //save data
+                do {
+                    try self.context.save()
+                    try self.context.parent?.save()
+                }
+                catch let error as NSError{
+                    print("ERROR: \(error.localizedDescription)")
+                }
+                self.reloadData()
+
             }
 
             self.addAlert!.addAction(cancelAction)

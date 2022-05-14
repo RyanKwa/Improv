@@ -6,24 +6,25 @@
 //
 
 import UIKit
+import CoreData
 import AVFoundation
-var audioPlayer: AVAudioPlayer!
 
 class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var rehearsalCollectionView: UICollectionView!
     var indexPlay = -1
+    var audioPlayer: AVAudioPlayer!
 
     var selectedCell: RehearsalCollectionViewCell?
     var rehearsalsArr = [Rehearsal]()
     var userDataRehearsal = [Rehearsal]()
     var addAlert: UIAlertController?
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        getRehearsals()
-
-        rehearsalCollectionView.reloadData()
+        fetchRehearsals()
         rehearsalCollectionView.delegate = self
         rehearsalCollectionView.dataSource = self
         
@@ -31,30 +32,27 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        getRehearsals()
-        rehearsalCollectionView.reloadData()
+        fetchRehearsals()
+    }
+    func fetchRehearsals(){
+        do{
+            let request = Rehearsal.fetchRequest() as NSFetchRequest<Rehearsal>
+            
+            let sort = NSSortDescriptor(key: "rehearsalID", ascending: false)
+            request.sortDescriptors = [sort]
+            
+            self.rehearsalsArr = try context.fetch(request)
+            
+            DispatchQueue.main.async {
+                self.rehearsalCollectionView.reloadData()
+            }
+        }
+        catch let error as NSError{
+            print("Error : \(error.localizedDescription)")
+        }
 
     }
-    func deleteRehearsals(){
-        let temp = [Rehearsal]()
-        Helper.saveRehearsalToUserDefault(content: temp)
-    }
-    func getRehearsalsFromUserDefault() -> [Rehearsal] {
-        return Helper.getRehearsalsFromUserDefault()
-    }
-    func getRehearsals(){
-        rehearsalsArr = getRehearsalsFromUserDefault()
-        guard let directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else{
-            return
-        }
-        var i = 0
-        for rehearsal in rehearsalsArr {
-            let audioFileURL = directoryURL.appendingPathComponent(rehearsal.filePath!)
-            rehearsal.filePath = audioFileURL.absoluteString
-            i += 1
-        }
-        rehearsalCollectionView.reloadData()
-    }
+
     func updateRehearseFileName(rehearsal: Rehearsal, newName: String) -> String {
         guard let directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else{
             return ""
@@ -84,11 +82,16 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
     }
 
     func deleteRehearsal(filePath: String){
+        guard let directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else{
+            return
+        }
 
-        let url = URL(string: filePath)!
-        if FileManager.default.fileExists(atPath: url.path){
+        let urlString = directoryURL.appendingPathComponent(filePath).absoluteString
+        let url = URL(string: urlString)
+//        let url = URL(string: filePath)
+        if FileManager.default.fileExists(atPath: url!.path){
             do{
-                try FileManager.default.removeItem(at: url)
+                try FileManager.default.removeItem(at: url!)
             }
             catch{
                 print("Rehearsal: ERROR Deleting file")
@@ -124,8 +127,10 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as? RehearsalCollectionViewCell
-        
+        guard let directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else{
+            return
+        }
+
         if(audioPlayer?.isPlaying == true && indexPlay == indexPath.row){
             audioPlayer?.stop()
             selectedCell?.controlButton.setImage(UIImage(systemName:"waveform"), for: .normal)
@@ -135,8 +140,8 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
             audioPlayer?.stop()
             selectedCell?.controlButton.setImage(UIImage(systemName:"waveform"), for: .normal)
         }
-        let url = URL(string: rehearsalsArr[indexPath.row].filePath!)
-
+        let urlString = directoryURL.appendingPathComponent(rehearsalsArr[indexPath.row].filePath!).absoluteString
+        let url = URL(string: urlString)
         audioPlayer = try? AVAudioPlayer(contentsOf: url!)
         do{
             selectedCell = collectionView.cellForItem(at: indexPath) as? RehearsalCollectionViewCell
@@ -153,9 +158,8 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
         }
     }
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-
-        var tempRehearsalArr = getRehearsalsFromUserDefault()
-        let rehearsal = tempRehearsalArr[indexPath.row]
+        
+        let rehearsal = rehearsalsArr[indexPath.row]
         let renameAction = UIAction(title: "Rename", image: UIImage(systemName: "pencil"), identifier: nil){_ in
             //alert input
             let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
@@ -167,12 +171,20 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
             self.addAlert?.textFields![0].text = rehearsal.name
             let saveAction = UIAlertAction(title: "Save", style: .default) { [self] _ in
                 let rehearseName = self.addAlert?.textFields![0].text
-                rehearsal.name = rehearseName
                 let newRehearsalFileName = self.updateRehearseFileName(rehearsal: rehearsal, newName: rehearseName!)
+                //edit name
+                rehearsal.name = rehearseName
                 rehearsal.filePath = newRehearsalFileName
-                //save to userdefault
-                Helper.saveRehearsalToUserDefault(content: tempRehearsalArr)
-                self.getRehearsals()
+                //save data
+                do {
+                    try self.context.save()
+                }
+                catch let error as NSError{
+                    print("ERROR: \(error.localizedDescription)")
+                }
+                //fetch
+                self.fetchRehearsals()
+                
             }
             saveAction.isEnabled = false
             self.addAlert!.addAction(cancelAction)
@@ -187,12 +199,22 @@ extension RehearsalViewController: UICollectionViewDelegate, UICollectionViewDat
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
                 self.deleteRehearsal(filePath: self.rehearsalsArr[indexPath.row].filePath!)
 
-                self.rehearsalsArr.remove(at: indexPath.row)
-                tempRehearsalArr.remove(at: indexPath.row)
+                let rehearsalToBeRemoved = self.rehearsalsArr[indexPath.row]
                 
-                //save to userdefault
-                Helper.saveRehearsalToUserDefault(content: tempRehearsalArr)
-                self.getRehearsals()
+                //remove the folder
+                self.context.delete(rehearsalToBeRemoved)
+                
+                //save data
+                do {
+                    try self.context.save()
+                }
+                catch let error as NSError{
+                    print("ERROR: \(error.localizedDescription)")
+                }
+
+                //fetch
+                self.fetchRehearsals()
+
             }
 
             self.addAlert!.addAction(cancelAction)

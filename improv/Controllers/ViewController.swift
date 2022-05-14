@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, UITextFieldDelegate {
 
@@ -14,20 +15,39 @@ class ViewController: UIViewController, UITextFieldDelegate {
     var clicked = false
     var addAlert: UIAlertController?
     var indexSelected = -1
-
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override func viewDidLoad() {
         super.viewDidLoad()
         folderTableView.delegate = self
         folderTableView.dataSource = self
-        getFolders()
+        fetchFolders()
         folderTableView.backgroundColor = .none
         
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        getFolders()
+        fetchFolders()
     }
-
+    
+    func fetchFolders(){
+        do{
+            let request = Folder.fetchRequest() as NSFetchRequest<Folder>
+            
+            let sort = NSSortDescriptor(key: "folderID", ascending: true)
+            request.sortDescriptors = [sort]
+            
+            self.foldersArr = try context.fetch(request)
+            
+            DispatchQueue.main.async {
+                self.folderTableView.reloadData()
+            }
+        }
+        catch let error as NSError{
+            print("Error : \(error.localizedDescription)")
+        }
+        print("COREDATA: WORKING FOLDER")
+    }
+    
     @IBAction func addButtonPressed(_ sender: Any) {
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
@@ -37,10 +57,27 @@ class ViewController: UIViewController, UITextFieldDelegate {
             textField.addTarget(self, action: #selector(self.textFieldDidChangeSelection(_:)), for: .editingChanged)
         }
 
-        let saveAction = UIAlertAction(title: "Save", style: .default) { [unowned addAlert] _ in
+        let saveAction = UIAlertAction(title: "Save", style: .default) { [self, unowned addAlert] _ in
             let folderName = addAlert?.textFields![0].text
-            self.foldersArr.append(Folder(name: folderName, notes: []))
-            self.saveToUserDefaultAndRefreshData()
+            //create folder object
+            let newFolder = Folder(context: self.context)
+            if self.foldersArr.isEmpty {
+                newFolder.folderID = 1
+            }
+            else{
+                newFolder.folderID = self.foldersArr.last!.folderID + 1
+            }
+            newFolder.name = folderName
+            newFolder.notes = []
+            //save data
+            do {
+                try self.context.save()
+            }
+            catch let error as NSError{
+                print("ERROR: \(error.localizedDescription)")
+            }
+            //refetch data
+            self.fetchFolders()
         }
         saveAction.isEnabled = false
         addAlert!.addAction(cancelAction)
@@ -64,22 +101,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let destination = segue.destination as? NoteViewController
         destination?.titleNavBar = foldersArr[indexSelected].name ?? ""
         destination?.folderIndex = indexSelected
+        destination?.folder = foldersArr[indexSelected]
         let backButton = UIBarButtonItem()
         backButton.title = "Folders"
         navigationItem.backBarButtonItem = backButton
-    }
-    func getFolders(){
-        foldersArr = Helper.getFoldersFromUserDefault()
-        folderTableView.reloadData()
-    }
-    
-    func removeAllFolder(){
-        let temp = [Folder]()
-        Helper.saveFolderToUserDefault(content: temp)
-    }
-    func saveToUserDefaultAndRefreshData(){
-        Helper.saveFolderToUserDefault(content: foldersArr)
-        folderTableView.reloadData()
     }
 }
 
@@ -91,7 +116,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "folderCell") as! FolderTableViewCell
         cell.folderName.text = foldersArr[indexPath.row].name
-        cell.totalNumberOfCard.text = "\(foldersArr[indexPath.row].notes.count) notes"
+        cell.totalNumberOfCard.text = "\(foldersArr[indexPath.row].notes!.count) notes"
         return cell
     }
     
@@ -115,8 +140,18 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
             self.addAlert?.textFields![0].text = folder.name
             let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
                 let folderName = self.addAlert?.textFields![0].text
-                self.foldersArr[indexPath.row].name = folderName
-                self.saveToUserDefaultAndRefreshData()
+                
+                //edit name
+                folder.name = folderName
+                //save data
+                do {
+                    try self.context.save()
+                }
+                catch let error as NSError{
+                    print("ERROR: \(error.localizedDescription)")
+                }
+                //fetch
+                self.fetchFolders()
             }
             saveAction.isEnabled = false
             self.addAlert!.addAction(cancelAction)
@@ -129,8 +164,23 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
 
             self.addAlert = UIAlertController(title: "Delete Folder", message: "This folder and all the notes inside will be deleted permanently", preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
-                self.foldersArr.remove(at: indexPath.row)
-                self.saveToUserDefaultAndRefreshData()
+                
+                //get folder to remove
+                let folderToRemove = self.foldersArr[indexPath.row]
+                
+                //remove the folder
+                self.context.delete(folderToRemove)
+                
+                //save data
+                do {
+                    try self.context.save()
+                }
+                catch let error as NSError{
+                    print("ERROR: \(error.localizedDescription)")
+                }
+
+                //fetch
+                self.fetchFolders()
             }
 
             self.addAlert!.addAction(cancelAction)

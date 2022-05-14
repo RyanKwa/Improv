@@ -22,8 +22,6 @@
 		C57998FD2816E17700A08041 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C57998FB2816E17700A08041 /* Main.storyboard */; };
 		C57998FF2816E17900A08041 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C57998FE2816E17900A08041 /* Assets.xcassets */; };
 		C57999022816E17900A08041 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C57999002816E17900A08041 /* LaunchScreen.storyboard */; };
-		C5B1984A2824010B00CE5073 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B198492824010B00CE5073 /* Helper.swift */; };
-		C5B1984C282403D100CE5073 /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */; };
 		C5C1DAC0282FF5ED0062CF5C /* Improv.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DABE282FF5ED0062CF5C /* Improv.xcdatamodeld */; };
 		C5C1DAD4282FF8300062CF5C /* Rehearsal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DACE282FF8300062CF5C /* Rehearsal+CoreDataClass.swift */; };
 		C5C1DAD5282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C1DACF282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift */; };
@@ -52,8 +50,6 @@
 		C57998FE2816E17900A08041 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C57999012816E17900A08041 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C57999032816E17900A08041 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C5B198492824010B00CE5073 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
-		C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
 		C5C1DABF282FF5ED0062CF5C /* Improv.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Improv.xcdatamodel; sourceTree = "<group>"; };
 		C5C1DACE282FF8300062CF5C /* Rehearsal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Rehearsal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		C5C1DACF282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Rehearsal+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -136,9 +132,7 @@
 		C5B1984F282411EF00CE5073 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				C5B1984B282403D100CE5073 /* UserDefaultKeys.swift */,
 				C56470C82817E8D4005A32FC /* UIView+Extension.swift */,
-				C5B198492824010B00CE5073 /* Helper.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -233,10 +227,8 @@
 				C566B44528192A8400E381FF /* NotesTableViewCell.swift in Sources */,
 				C566B4432818F94400E381FF /* ManageNoteViewController.swift in Sources */,
 				C5722746281830B500AB5B41 /* NoteCollectionFlowLayout.swift in Sources */,
-				C5B1984C282403D100CE5073 /* UserDefaultKeys.swift in Sources */,
 				C5C1DAD4282FF8300062CF5C /* Rehearsal+CoreDataClass.swift in Sources */,
 				C5C1DAD8282FF8300062CF5C /* Folder+CoreDataClass.swift in Sources */,
-				C5B1984A2824010B00CE5073 /* Helper.swift in Sources */,
 				C5C1DAD7282FF8300062CF5C /* Note+CoreDataProperties.swift in Sources */,
 				C5C1DAD5282FF8300062CF5C /* Rehearsal+CoreDataProperties.swift in Sources */,
 				C5C1DAC0282FF5ED0062CF5C /* Improv.xcdatamodeld in Sources */,

@@ -17,38 +17,27 @@ class AddEditNoteViewController: UIViewController {
     @IBOutlet weak var navTitle: UINavigationItem!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentTextView: UITextView!
+
     var note: Note?
-    var foldersArr = [Folder]()
-    var isEditingNote = false
-    var folderIndex = -1
-    var noteIndex = -1
+    var folder: Folder?
     
+    var isEditingNote = false
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
     
     // MARK: - delegate object initialization
     weak var delegate: AddEdtNoteViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if folderIndex == -1{
-            return
-        }
-        getFolders()
         if isEditingNote {
-            
-            if noteIndex == -1{
-                return
-            }
             navTitle.title = "Edit Note"
-
-            titleTextField.text = foldersArr[folderIndex].notes[noteIndex].title
-            contentTextView.text = foldersArr[folderIndex].notes[noteIndex].content
+            titleTextField.text = note?.title
+            contentTextView.text = note?.content
         }
         else{
             navTitle.title = "Add Note"
         }
-    }
-    func getFolders(){
-        foldersArr = Helper.getFoldersFromUserDefault()
     }
     @IBAction func cancelButtonPressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -72,14 +61,32 @@ class AddEditNoteViewController: UIViewController {
         }
         //edit note
         if isEditingNote{
-            foldersArr[folderIndex].notes[noteIndex].title = titleTextField.text
-            foldersArr[folderIndex].notes[noteIndex].content = contentTextView.text
+            note?.title = titleTextField.text
+            note?.content = contentTextView.text
         }
         //new Note
         else{
-            foldersArr[folderIndex].notes.append(Note(title: titleTextField.text, content: contentTextView.text))
+            let newNote = Note(context: context)
+            if let notes = folder?.notesArray{
+                if notes.isEmpty {
+                    newNote.noteID = 1
+                }
+                else{
+                    newNote.noteID = notes.last!.noteID + 1
+                }
+            }
+            newNote.title = titleTextField.text
+            newNote.content = contentTextView.text
+            folder?.addToNotes(newNote)
         }
-        Helper.saveFolderToUserDefault(content: foldersArr)
+        //save data
+        do {
+            try self.context.save()
+            try self.context.parent?.save()
+        }
+        catch let error as NSError{
+            print("ERROR: \(error.localizedDescription)")
+        }
         self.dismiss(animated: true, completion: self.delegate?.reloadData)
     }
     
