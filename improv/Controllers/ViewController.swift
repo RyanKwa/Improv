@@ -100,7 +100,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         let destination = segue.destination as? NoteViewController
         destination?.titleNavBar = foldersArr[indexSelected].name ?? ""
-        destination?.folderIndex = indexSelected
         destination?.folder = foldersArr[indexSelected]
         let backButton = UIBarButtonItem()
         backButton.title = "Folders"
