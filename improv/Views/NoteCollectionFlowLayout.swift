@@ -9,8 +9,8 @@ import UIKit
 
 class NoteCollectionFlowLayout: UICollectionViewFlowLayout {
     //cell size
-    var contentWidth = 390
-    var contentHeight = 549
+    var contentWidth = UIScreen.main.bounds.size.width
+    var contentHeight = UIScreen.main.bounds.size.height/1.6
     override func prepare() {
         guard let collectionView = collectionView else{
             return
@@ -30,12 +30,16 @@ class NoteCollectionFlowLayout: UICollectionViewFlowLayout {
         let cardPeekWidth = itemSize.width / 9
         //horizontal margin, insets = margin, this case 0
         let horizontalInset = (collectionView.frame.size.width - itemSize.width) / 2
+        
+        print("NoteCollectionViewLayout cardPeekWidth: \(cardPeekWidth)")
+        print("NoteCollectionViewLayout collectionViewSizeWidth: \(collectionView.frame.size.width)")
+        print("NoteCollectionViewLayout Horizontal margin: \(horizontalInset)")
         //set margin
         collectionView.contentInset = UIEdgeInsets(top: 0, left: horizontalInset, bottom: 0, right: horizontalInset)
         
         //jarak antara 1 card ke card lain semakin kecil, semakin dekat jaraknya
         minimumLineSpacing = horizontalInset - cardPeekWidth
-        print("HOrinset: \(minimumLineSpacing)")
+//        print("HOrinset: \(minimumLineSpacing)")
 
     }
 }
