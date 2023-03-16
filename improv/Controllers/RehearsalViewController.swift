@@ -66,7 +66,7 @@ class RehearsalViewController: UIViewController, AVAudioPlayerDelegate, UITextFi
             try FileManager.default.moveItem(at: oldAudioFileURL, to: newAudioFileURL)
         }
         catch{
-            print("EROR")
+            print("ERROR Getting File")
         }
 
         return newFileName

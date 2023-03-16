@@ -235,30 +235,22 @@ extension NoteViewController{
         guard scrollView == noteCollectionView else{
             return
         }
-        print()
         // Save offsetnya ke memory
         targetContentOffset.pointee = scrollView.contentOffset
         
-        print("DEBUG: TargetContentOffset: \(targetContentOffset)")
-        print("DEBUG: ContentOffset: \(scrollView.contentOffset)")
         let flowLayout = noteCollectionView.collectionViewLayout as! NoteCollectionFlowLayout
 
         //untuk dapetin current cell width dan spacing
         let cellWidthAndSpacing = flowLayout.itemSize.width + flowLayout.minimumLineSpacing
-        print("DEBUG: cellWidthAndSpacing: \(cellWidthAndSpacing)")
-        print("DEBUG: flowLayout.itemSize.width: \(flowLayout.itemSize.width)")
-        print("DEBUG: flowLayout.minimumLineSpacing: \(flowLayout.minimumLineSpacing)")
-
+        
         // Posisi scroll sekarang, dilakukan sama user
         let offset = targetContentOffset.pointee
         
         //scroll speed
         let horizontalSwipeVelocity = velocity.x
-
-        print("DEBUG: horizontalSwipeVelocity: \(horizontalSwipeVelocity)")
         
         var selectedIndex = currentSelectedIndex
-        print("DEBUG: selectedIndex: \(selectedIndex)")
+
         // user swipe kanan
         if horizontalSwipeVelocity > CGFloat(0) {
             selectedIndex = currentSelectedIndex + 1
@@ -270,9 +262,6 @@ extension NoteViewController{
         // user drag cardnya
         else if horizontalSwipeVelocity == CGFloat(0) {
             let idx = (offset.x + scrollView.contentInset.left) / cellWidthAndSpacing
-            print("OffsetX: \(offset.x)")
-            print("scrollViewMarginLeft: \(scrollView.contentInset.left))")
-            print("IDX: \((offset.x + scrollView.contentInset.left) / cellWidthAndSpacing)")
             let roundedIndex = round(idx)
             selectedIndex = Int(roundedIndex)
         }

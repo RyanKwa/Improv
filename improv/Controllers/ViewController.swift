@@ -45,7 +45,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         catch let error as NSError{
             print("Error : \(error.localizedDescription)")
         }
-        print("COREDATA: WORKING FOLDER")
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
